@@ -1,0 +1,19 @@
+# RAG 问答程序依赖
+# 环境：Python 3.11（3.10+ 均可）
+
+# 调用 DeepSeek 的 OpenAI 兼容接口
+requests>=2.34.2
+
+# 从 .env 读取 API Key
+python-dotenv>=1.2.2
+
+# 加载中文 Embedding 模型（BAAI/bge-small-zh）
+sentence-transformers>=5.5.1
+
+# 向量存储与相似度计算
+numpy>=2.4.6
+
+# sentence-transformers 依赖的深度学习框架（CPU 版即可）
+# 若已装 CUDA 版 torch 可不重复安装：
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.11.0
