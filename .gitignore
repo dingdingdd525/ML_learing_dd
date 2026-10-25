@@ -12,6 +12,9 @@ secrets.json
 # ===== 模型权重 =====
 3.CNN/checkpoints/*.pth
 
+# ===== 外部克隆的学习仓库：只做本地实验，绝不推送 =====
+minimind/
+
 # ===== RAG 生成的向量索引（可由 build_index.py 重建）=====
 6.RAG数据库/vectors.npy
 

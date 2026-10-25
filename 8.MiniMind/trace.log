@@ -1,0 +1,73 @@
+==============================================================================
+[1] 消息列表 (list[dict])
+[{'role': 'user', 'content': '请用不超过 100 字解释什么是机器学习。'}]
+
+[2] apply_chat_template(tokenize=False, add_generation_prompt=True)
+--- add_generation_prompt=False ---
+'<|im_start|>user\n请用不超过 100 字解释什么是机器学习。<|im_end|>\n'
+原始渲染：
+
+<|im_start|>user
+请用不超过 100 字解释什么是机器学习。<|im_end|>
+
+--- add_generation_prompt=True ---
+'<|im_start|>user\n请用不超过 100 字解释什么是机器学习。<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n'
+原始渲染：
+
+<|im_start|>user
+请用不超过 100 字解释什么是机器学习。<|im_end|>
+
+<|im_start|>assistant
+<think>
+
+</think>
+
+
+
+[3] tokenizer(...) -> input_ids.shape=(1, 29) dtype=torch.int64
+    attention_mask=[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+    n_tokens=29
+      0 id=1      '<|im_start|>'
+      1 id=832    'us'
+      2 id=311    'er'
+      3 id=234    '\n'
+      4 id=960    '请'
+      5 id=368    '用'
+      6 id=417    '不'
+      7 id=4976   '超过'
+      8 id=2277   ' 100'
+      9 id=256    ' '
+     10 id=702    '字'
+     11 id=2093   '解释'
+     12 id=1403   '什么'
+     13 id=357    '是'
+     14 id=2683   '机器学习'
+     15 id=302    '。'
+     16 id=2      '<|im_end|>'
+     17 id=234    '\n'
+     18 id=1      '<|im_start|>'
+     19 id=1388   'ass'
+     20 id=570    'ist'
+     21 id=811    'ant'
+     22 id=234    '\n'
+     23 id=25     '<think>'
+     24 id=234    '\n'
+     25 id=234    '\n'
+     26 id=26     '</think>'
+     27 id=234    '\n'
+     28 id=234    '\n'
+
+[4] 关键特殊 token
+    bos_token  '<|im_start|>' -> id=1
+    eos_token  '<|im_end|>' -> id=2
+    pad_token  '<|endoftext|>' -> id=0
+
+[5] model.generate(...) 一次调用内部发生的事
+    prefill: 整段 prompt 前向 -> logits[:, -1, :] / temperature
+    sample : top_k(50, GenerationConfig 默认) -> top_p(0.95) -> multinomial
+    循环   : 把新 token 拼回 input_ids，用 KV cache 只算新 token，直到 eos / max_new_tokens
+    返回 shape=(1, 53)  新增 24 个 token: [2683, 357, 2225, 4637, 513, 976, 294, 697, 476, 2575, 934, 369, 417, 815, 2554, 2089, 4194, 860, 569, 388, 768, 797, 3406, 636]
+    decode -> '机器学习是人工智能的一个分支，它使计算机能够在不进行明确编程的情况下从数据中学习并改进其'
+
+[6] 统计: 总 token 53 = prompt 29 + 新增 24
+==============================================================================

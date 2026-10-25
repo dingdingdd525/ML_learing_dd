@@ -1,0 +1,68 @@
+第 1 步：理论打底（对应作业的“阅读任务”）
+目标：读完 LLaMA 论文，交出一份 llama_reading.md。
+
+读论文：重点看 LLaMA 的架构图（RMSNorm、SwiGLU、RoPE 在哪里），以及数据配比和 Zero/Few-shot 评测部分。
+
+答问题：用自己的话回答那 5 个问题。比如第 1 题就是让你对比原始 Transformer 和 LLaMA 的区别。
+
+画链路图：把作业里要求的那个流程（Transformer → 预训练 → Base LLM → Prompt → SFT → Chat Model）用一张图（Draw.io 或 Mermaid）画出来。
+
+🔍 第 2 步：代码解剖（对应“模型结构梳理”）
+目标：打开 model/model_minimind.py，看懂每一行代码，做出一张对应表。
+
+找模块：在代码里定位 Token Embedding、Causal Attention、RMSNorm、RoPE、GQA、SwiGLU、KV Cache。
+
+做对应表：画个表格，列出【LLaMA 概念】→【MiniMind 代码位置（行号）】→【作用】。
+
+核心目标：这一步是你以后写自定义算子的基础。看懂数据在代码里是怎么流动的，前向传播经过了哪些张量运算。
+
+🖥️ 第 3 步：基础实战——本地核显跑推理（对应“基础任务”）
+目标：在你的小新 Pro 16 上，成功让模型开口说话。
+
+拉代码：git clone MiniMind 项目，pip install -r requirements.txt。
+
+下权重：按 README 下载 minimind-3 的 checkpoint。
+
+跑推理：运行 python eval_llm.py --load_from ./minimind-3。
+
+测试与记录：
+
+输入作业给的 5 个问题（或者你自己想的）。
+
+记录关键参数：模型名称、设备（CPU/XPU）、生成参数（Temperature/Top-p）、生成 Token 数、生成速度（tokens/s）。你的核显跑 26M 小模型应该很流畅。
+
+追问原理：结合代码，写清楚输入文本是怎么经过 chat template 套模板、tokenizer 转成 ID、最后通过 generate() 变成输出文本的。
+
+☁️ 第 4 步：进阶实战——租卡复现训练（对应“进阶任务”）
+目标：在云端 GPU 上，从零训练出一个模型。
+
+租卡：在 AutoDL 租一张 RTX 3090 (24GB)，选 PyTorch 镜像。
+
+配环境：克隆代码，装依赖。
+
+下数据：按 README 下载预训练数据（Pretrain）和 SFT 数据。
+
+跑预训练：运行 python train_pretrain.py，看着 Loss 下降。（允许缩小模型或减少步数，但要记录你改了什么）。
+
+跑 SFT：在预训练权重的基础上，运行 python train_full_sft.py，让模型学会对话。
+
+保存成果：把 Loss 曲线截图、训练日志、最终的 checkpoint 文件保存下来（或者传到网盘）。
+
+🆚 第 5 步：效果对比与反思（对应“基础对比 + 思考题”）
+目标：搞清楚 Base 模型和 SFT 模型到底有什么区别。
+
+双模型推理：用作业里的 5 个问题，分别喂给【预训练模型】和【SFT 模型】。
+
+观察差异：你会发现 Base 模型可能只会接话，而 SFT 模型才能真正理解“请帮我写代码”这样的指令。记录下两者的输出差异。
+
+回答思考题：
+
+数据流转路径（输入 Token → 各种层 → 输出 Token）。
+MiniMind 和 LLaMA 的异同（架构一致，规模缩小）。
+复盘你的训练瓶颈（是显存炸了？是数据下载慢？还是时间不够？）。
+📦 第 6 步：交付与沉淀（对应“提交内容”）
+目标：整理出一份漂亮的 GitHub 仓库。
+
+把代码、模型结构图、推理结果截图、训练日志、Loss 曲线、README（包含环境配置、硬件说明、运行命令、遇到的坑）整理成一份文档。
+
+这就是你未来简历上非常亮眼的“大模型项目实战经历”。
